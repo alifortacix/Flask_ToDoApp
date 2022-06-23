@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do App | Flask</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container-fluid m-0 p-0">
+        <nav class="navbar navbar-dark bg-dark mb-5">
+            <div class="container">
+                <span class="navbar-text">
+                  To Do App with Flask
+                </span>
+            </div>
+        </nav>
+    </div>
+    <div class="container">
+        <div class="row">
+            <form action="/addtodo" method="post">
+                <div class="form-group">
+                  <label for="titleInput">To Do Heading!</label>
+                  <input type="text" class="form-control" id="titleInput" name="title" aria-describedby="titleInput" placeholder="Enter Title">
+                  <!-- <small id="titleInput" class="form-text text-muted">To do heading.</small> -->
+                </div>
+                <div class="form-group">
+                  <label for="todoContent">To Do Content</label>
+                  <input type="text" class="form-control" id="todoContent" name="content" placeholder="Enter Content">
+                </div>
+                <div class="form-group mt-1">
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Add</button>
+                </div>
+              </form>
+        </div>
+        <div class="row mt-5">
+            <table class="table table-striped table-dark">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Content</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Confirm</th>
+                    <th scope="col">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for todo in todos %}
+                  <tr>
+                    <th>{{ todo['id'] }}</th>
+                    <td>{{ todo['title'] }}</td>
+                    <td>{{ todo['content'] }}</td>
+                    <td>{{ todo['status'] }}</td>
+                    <td><a class="btn btn-primary updateStatus" data-status="{{todo['status']}}" data-val="{{todo['id']}}">Confirm</a></td>
+                    <td>
+                    <a class="btn btn-danger" href="/deleteTodo/{{ todo['id'] }}">Delete</a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+        </div>
+    </div>
+
+    <!-- JS Imports -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script>
+      $(document).ready(function(){
+        
+        $(".updateStatus").click(function () {
+            var updateId = $(this).data('val');
+            var status = $(this).data('status');
+
+            $.ajax({
+                url: 'http://127.0.0.1:5000/updateStatus',
+                type: 'POST',
+                dataType: 'text',
+                data: { status: status, id: updateId },
+                success: function (response) {
+                  window.location.replace("http://127.0.0.1:5000/");
+                },
+                error: function (responsefail) {
+                  console.log("failed!")
+                }
+            });
+        });
+        
+      });
+    </script>
+</body>
+</html>
